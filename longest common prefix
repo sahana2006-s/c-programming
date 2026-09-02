@@ -1,0 +1,26 @@
+#include <stdlib.h>
+#include <string.h>
+int compareStrings(const void* a, const void* b) {
+    return strcmp(*(const char**)a, *(const char**)b);
+}
+char* longestCommonPrefix(char** strs, int strsSize) {
+    if (strsSize == 0 || strs == NULL) {
+        char* empty = (char*)malloc(1);
+        empty[0] = '\0';
+        return empty;
+    }
+    if (strsSize == 1) {
+        return strdup(strs[0]);
+    }
+    qsort(strs, strsSize, sizeof(char*), compareStrings);
+    char* first = strs[0];
+    char* last = strs[strsSize - 1];
+    int i = 0;
+    while (first[i] != '\0' && last[i] != '\0' && first[i] == last[i]) {
+        i++;
+    }
+    char* result = (char*)malloc((i + 1) * sizeof(char));
+    strncpy(result, first, i);
+    result[i] = '\0';
+    return result;
+}
