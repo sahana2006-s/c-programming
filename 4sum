@@ -1,0 +1,62 @@
+#include <stdlib.h>
+int compare(const void* a, const void* b) {
+    long long arg1 = *(const int*)a;
+    long long arg2 = *(const int*)b;
+    if (arg1 < arg2) return -1;
+    if (arg1 > arg2) return 1;
+    return 0;
+}
+int** fourSum(int* nums, int numsSize, int target, int* returnSize, int** returnColumnSizes) {
+    qsort(nums, numsSize, sizeof(int), compare);
+    
+    int capacity = 16;
+    int** result = (int**)malloc(capacity * sizeof(int*));
+    *returnColumnSizes = (int*)malloc(capacity * sizeof(int));
+    int count = 0;
+     for (int i = 0; i < numsSize - 3; i++) {
+        if (i > 0 && nums[i] == nums[i - 1]) continue;
+        for (int j = i + 1; j < numsSize - 2; j++) {
+            // Skip duplicate combinations for the second element
+            if (j > i + 1 && nums[j] == nums[j - 1]) continue;
+            int left = j + 1;
+            int right = numsSize - 1;
+            
+            while (left < right) {
+               
+                long long sum = (long long)nums[i] + nums[j] + nums[left] + nums[right];
+                
+                if (sum == target) {
+                    
+                    if (count >= capacity) {
+                        capacity *= 2;
+                        result = (int**)realloc(result, capacity * sizeof(int*));
+                        *returnColumnSizes = (int*)realloc(*returnColumnSizes, capacity * sizeof(int));
+                    }
+                     result[count] = (int*)malloc(4 * sizeof(int));
+                    result[count][0] = nums[i];
+                    result[count][1] = nums[j];
+                    result[count][2] = nums[left];
+                    result[count][3] = nums[right];
+                    (*returnColumnSizes)[count] = 4;
+                    count++;
+                    
+                    // Skip matching neighbor values to eliminate duplicate answers
+                    while (left < right && nums[left] == nums[left + 1]) left++;
+                    while (left < right && nums[right] == nums[right - 1]) right--;
+                    
+                    left++;
+                    right--;
+                } 
+                else if (sum < target) {
+                    left++;
+                } 
+                else {
+                    right--;
+                }
+            }
+        }
+    }
+    
+    *returnSize = count;
+    return result;
+}
