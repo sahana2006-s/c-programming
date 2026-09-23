@@ -1,0 +1,26 @@
+#include <stdio.h>
+
+int firstMissingPositive(int* nums, int numsSize) {
+    // Place each number in its correct index position if possible
+    for (int i = 0; i < numsSize; i++) {
+        // Use a long long or cast to prevent integer overflow when computing target_idx
+        while (nums[i] > 0 && nums[i] <= numsSize && nums[nums[i] - 1] != nums[i]) {
+            int target_idx = nums[i] - 1;
+            
+            // Swap nums[i] and nums[target_idx]
+            int temp = nums[i];
+            nums[i] = nums[target_idx];
+            nums[target_idx] = temp;
+        }
+    }
+    
+    // Find the first index where the number is incorrect
+    for (int i = 0; i < numsSize; i++) {
+        if (nums[i] != i + 1) {
+            return i + 1;
+        }
+    }
+    
+    // If all positions 1 to numsSize are filled, the missing number is numsSize + 1
+    return numsSize + 1;
+}
