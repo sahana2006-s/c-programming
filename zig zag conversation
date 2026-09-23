@@ -1,0 +1,36 @@
+#include <stdlib.h>
+#include <string.h>
+
+char* convert(char* s, int numRows) {
+    // Edge case: if rows count is 1, the pattern does not change
+    if (numRows <= 1) {
+        return s;
+    }
+
+    int len = strlen(s);
+    char* result = (char*)malloc((len + 1) * sizeof(char));
+    int res_idx = 0;
+
+    // The distance between the main vertical columns
+    int cycle_len = 2 * numRows - 2;
+
+    for (int r = 0; r < numRows; r++) {
+        for (int i = 0; i + r < len; i += cycle_len) {
+            // Append character from the main vertical column
+            result[res_idx++] = s[i + r];
+
+            // If inside inner rows, append the character from the diagonal step
+            if (r != 0 && r != numRows - 1) {
+                int diagonal_idx = i + cycle_len - r;
+                if (diagonal_idx < len) {
+                    result[res_idx++] = s[diagonal_idx];
+                }
+            }
+        }
+    }
+
+    result[res_idx] = '\0'; // Set null terminator
+    return result;
+}
+ 
+
