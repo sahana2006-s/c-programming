@@ -1,0 +1,46 @@
+#include <string.h>
+#include <stdlib.h>
+int expandAroundCenter(char* s, int left, int right) {
+    while (left >= 0 && s[right] != '\0' && s[left] == s[right]) {
+        left--;
+        right++;
+    }
+    
+    return right - left - 1;
+}
+
+char* longestPalindrome(char* s) {
+    if (s == NULL || s[0] == '\0') {
+        char* empty = (char*)malloc(1);
+        empty[0] = '\0';
+        return empty;
+    }
+
+    int start = 0;
+    int max_len = 0;
+
+    for (int i = 0; s[i] != '\0'; i++) {
+      
+        int len1 = expandAroundCenter(s, i, i);
+        
+        
+        int len2 = expandAroundCenter(s, i, i + 1);
+        
+       
+        int len = len1 > len2 ? len1 : len2;
+        
+        
+        if (len > max_len) {
+            max_len = len;
+           
+            start = i - (len - 1) / 2;
+        }
+    }
+
+    // Allocate memory for the result string (+1 for the null terminator)
+    char* result = (char*)malloc((max_len + 1) * sizeof(char));
+    strncpy(result, s + start, max_len);
+    result[max_len] = '\0'; // Ensure proper termination
+
+    return result;
+}
