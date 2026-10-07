@@ -1,0 +1,33 @@
+#include <string.h>
+
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
+
+int lengthOfLongestSubstring(char* s) {
+    // Array to store the last seen index + 1 of each ASCII character
+    // Initialized to 0 (which means the character has not been seen yet)
+    int last_seen[128] = {0};
+    
+    int max_len = 0;
+    int start = 0;
+    
+    for (int end = 0; s[end] != '\0'; end++) {
+        int char_code = (int)s[end];
+        
+        // If the character was seen inside or after the current start pointer,
+        // jump the start pointer to the position right after its last occurrence.
+        if (last_seen[char_code] > start) {
+            start = last_seen[char_code];
+        }
+        
+        // Store the next index (end + 1) to avoid conflicts with default 0 value
+        last_seen[char_code] = end + 1;
+        
+        // Update the maximum length found so far
+        max_len = MAX(max_len, end - start + 1);
+    }
+    
+    return max_len;
+}
+View less
+ 
+
