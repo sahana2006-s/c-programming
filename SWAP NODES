@@ -1,0 +1,18 @@
+struct ListNode* swapPairsRecursive(struct ListNode* head) {
+    // Base case: Less than 2 nodes remaining
+    if (!head || !head->next) {
+        return head;
+    }
+    
+    // Nodes to be swapped
+    struct ListNode* first = head;
+    struct ListNode* second = head->next;
+    
+    // Recursive leap: Point first node to the result of the rest of the list
+    first->next = swapPairsRecursive(second->next);
+    // Point second node back to the first node
+    second->next = first;
+    
+    // The second node becomes the new head of this sub-component
+    return second;
+}
