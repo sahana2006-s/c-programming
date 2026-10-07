@@ -1,0 +1,48 @@
+#include <stdbool.h>
+#include <string.h>
+
+bool isMatch(char* s, char* p) {
+    int s_len = strlen(s);
+    int p_len = strlen(p);
+    
+    // dp[i][j] will be true if s[0..i-1] matches p[0..j-1]
+    bool dp[s_len + 1][p_len + 1];
+    memset(dp, 0, sizeof(dp));
+    
+    // Base case: Empty string matches empty pattern
+    dp[0][0] = true;
+    
+    // Base case: Deal with patterns like a*, a*b*, or .* that can match an empty string
+    for (int j = 1; j <= p_len; j++) {
+        if (p[j - 1] == '*') {
+            dp[0][j] = dp[0][j - 2];
+        }
+    }
+    
+    // Build the DP table bottom-up
+    for (int i = 1; i <= s_len; i++) {
+        for (int j = 1; j <= p_len; j++) {
+            
+            // Case 1: The current pattern character is a wildcard '*'
+            if (p[j - 1] == '*') {
+                // Subcase A: Count the '*' as zero occurrences of the preceding character
+                dp[i][j] = dp[i][j - 2];
+                
+                // Subcase B: Count the '*' as one or more occurrences
+                // Only possible if the preceding character matches the current string character
+                char preceding_char = p[j - 2];
+                if (preceding_char == '.' || preceding_char == s[i - 1]) {
+                    dp[i][j] = dp[i][j] || dp[i - 1][j];
+                }
+            } 
+            // Case 2: The current pattern character is a normal letter or a single wildcard '.'
+            else {
+                if (p[j - 1] == '.' || p[j - 1] == s[i - 1]) {
+                    dp[i][j] = dp[i - 1][j - 1];
+                }
+            }
+        }
+    }
+    
+    return dp[s_len][p_len];
+}
